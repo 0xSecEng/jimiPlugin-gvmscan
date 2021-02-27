@@ -1,0 +1,324 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+<style>
+	.settings-form{
+    margin: 10% auto;
+    width:  40% /* value of your choice which suits your alignment */
+}
+	#success_message {
+		background-color: lightgreen;
+		color: black
+	}
+	#error_message{
+		background-color: red;
+		color: black		
+	}
+
+
+	.status-card {
+		margin: 5px;
+		background: #fff;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+		transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+		border-radius: 2px;
+	}
+	.status-card.status-card--hoverable:hover {
+		box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+	}
+	.status-card .status-card__content {
+		padding: 5px;
+		margin-left: 90px;
+	}
+
+	.status-card__icon {
+		border-top-left-radius: 2px;
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 2px;
+		float: left;
+		width: 90px;
+		height: 90px;
+		text-align: center;
+		font-size: 45px;
+		line-height: 90px;
+		background: rgba(0, 0, 0, 0.2);
+		color: rgba(0, 0, 0, 0.87);
+	}
+	.status-card__content .status {
+		font-weight: 700;
+		font-size: 18px;
+		color: rgba(0, 0, 0, 0.87);
+	}
+	.status-card__content .title {
+		font-size: 14px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		text-transform: uppercase;
+		color: rgba(0, 0, 0, 0.54);
+	}
+	.status-card__content .description {
+		margin-top: 18px;
+		font-size: 12px;
+		font-weight: lighter;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		color: rgba(0, 0, 0, 1);
+	}
+	.status-card__icon--success {
+		background-color: #33b86c;
+	}
+	.status-card__icon--info {
+		background-color: #29b6f6;
+	}
+	.status-card__icon--warning {
+		background-color: #ffd740;
+	}
+	.status-card__icon--danger {
+		background-color: #ef5350;
+	}
+ 
+
+
+</style>
+<!-- Connection Bar Icons -->
+<!-- <link rel="stylesheet" href="{{ url_for('gvmPages.static', filename='css/settingsPageIcons.css ') }}"> -->
+
+{% endblock %}
+
+
+
+{% block content %}
+
+<div class="settings-form">
+
+	<div class="status-card status-card--hoverable">
+		<span class="status-card__icon {{ settings['css'] }}"> <!-- status-card__icon--danger -->
+		<!-- <i class="fa fa-check"></i> -->
+		<i class="fa {{ settings['icon'] }}"></i>
+		</span>
+			<div class="status-card__content">
+			<div class="title">Connection Status</div>
+			<div class="status">{{ settings['title'] }}</div>
+			<div class="description">{{ settings['description'] }}</div>
+		</div>
+	</div>	
+	<br>
+	<!-- Options Menu -->
+	<ul class="nav nav-pills nav-fill" id="nav-tab" role="tablist">
+		<li class="nav-item">
+			<a class="nav-item nav-link active" id="newconnection-tab" data-toggle="tab" href="#new-connection" role="tab" aria-controls="new-connection" aria-selected="true">New Connection</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-item nav-link" id="manageconnection-tab" data-toggle="tab" href="#manage-connection" role="tab" aria-controls="manage-connection" aria-selected="false">Manage Connections</a>
+		</li>
+	</ul>
+
+	<!-- Not sure if this is the best way to achieve the desired outcome-->
+	<div class="tab-content" id="nav-tabContent">
+		<div class="tab-pane fade show active" id="new-connection" role="tabpanel" aria-labelledby="newconnection-tab">
+			<form id="settingsForm">	
+				<!-- Headings-->
+				<h3 class="text-center">Web Plugin Settings</h3>
+				<h5 class="text-center">GVM Login Settings</h5>
+
+				<div class="form-group">
+					<input id="configName" type="text" class="form-control" placeholder="Configuration Name" required="required" autofocus>
+				</div>
+				<div class="form-group">
+					<input id="hostname" type="text" class="form-control" placeholder="GVM Host IP" required="required" autofocus>
+				</div>
+				<div class="form-group">
+					<input id="apiPort" type="text" class="form-control" placeholder="GVM API Port" required="required" autofocus>
+				</div>
+				<div class="form-group">
+					<input id="gvmUser" type="text" class="form-control" placeholder="GVM Username" required="required" autofocus>
+				</div>
+				<div class="form-group">
+					<input id="gvmPass" type="password" class="form-control" placeholder="Password" required="required">
+				</div>
+				<div class="form-check">
+					<input type="checkbox" class="form-check-input" id="defaultCheck">
+					<label class="form-check-label" for="defaultCheck">Set default config</label>
+					
+					<input type="checkbox" class="form-check-input" id="portForwardCheck" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+					<label class="form-check-label" for="portForwardCheck">Requires portForward</label>
+				</div>	
+				
+				<!-- Hidden Port Forward Menu-->
+				<div class="collapse" id="collapseExample">
+					<h5 class="text-center">Port Forward Settings</h5>
+
+					<div class="form-group">
+						<input id="keypath" type="text" class="form-control" placeholder="path to Key e.g.: /user/.ssh/xyz" autofocus>
+					</div>
+					<div class="form-group">
+						<input id="keyUser" type="text" class="form-control" placeholder="Key Username" autofocus>
+					</div>
+					<div class="form-check">
+						<input type="checkbox" class="form-check-input" id="keypassCheck">
+						<label class="form-check-label" for="keypassCheck">Key requires passphrase</label>
+					</div>	
+					<div class="form-group">
+						<input id="keyPassphrase" type="password" class="form-control" placeholder="Key Passphrase">
+					</div>
+				</div> <!-- End Hidden Collapseable Form-->
+
+				<!-- Submit / Test Buttons-->
+				<div class="form-group">
+					<input type="submit" class="btn btn-success btn-block" value="Submit"></input>
+				</div>
+				<div class="form-group">
+					<input type="submit" class="btn btn-danger btn-block" value="Test Connection"></input>
+				</div>
+
+				<!-- Hidden Pop up messages depending on outcome-->
+				<div id="success_message" class="ajax_response" style="float:left"></div>
+				<div id="error_message" class="ajax_response" style="float:left"></div>
+			</form>
+		</div> <!-- End New connection-->
+
+		<!-- Begin Manage connection -->
+		<div class="tab-pane fade" id="manage-connection" role="tabpanel" aria-labelledby="manageconnection-tab">
+			<form id="existingForm">	
+				<!-- Headings-->
+				<h3 class="text-center">Manage existing Connections</h3>
+				
+				<div class="form-group">
+					<label for="existingConfig">Please Select a config</label>
+					<select class="form-control" id="existingConfig">
+						{% for conf in configlist %}
+							<option>{{ conf }}</option>
+					  	{% endfor %}
+					</select>
+				  </div>
+				  <div class="form-check">
+					<input type="checkbox" class="form-check-input" id="manageDefaultCheck">
+					<label class="form-check-label" for="manageDefaultCheck">Set default config</label>
+					
+					<input type="checkbox" class="form-check-input" id="delConnection">
+					<label class="form-check-label" for="delConnection">Delete Connection</label>
+				</div>				
+				<!-- Submit Buttons-->
+				<div class="form-group">
+					<input type="submit" class="btn btn-success btn-block" value="Submit"></input>
+				</div>
+			</form>
+		</div> <!-- End Manage connection -->
+
+	</div> <!-- End Menu Switcher-->
+	
+</div> <!-- End Main Div-->
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+	function getReturn() {
+		return window.location.href.match("return=(\/.*)")[1];
+	};
+	var CSRF = "{{CSRF}}"
+
+    // $(".nav .nav-link").on("click", function(){
+    //     $(".nav").find(".active").removeClass("active");
+    //     $(this).addClass("active");
+	// });
+	
+
+	// $("#manage-connection").on("click", function(){
+    //     $(".nav").find(".active").removeClass("active");
+	// 	$(this).addClass("active");
+	// 	$("#new-connection").html("").hide();
+	// });
+
+	
+	// ("#manage-connection").click(function (e) {
+	// 	e.preventDefault();
+	// 	// $(this).tab('show');
+	// 	$("#new-connection").html("").hide();
+	// });
+
+
+	// $("#new-connection").html("").hide();
+	
+	// var ConnDefault = $('#defaultCheck:checked').val()
+	var ConnDefault 	= "False"
+	var reqPortFoward	= "False"
+	var isPassphrasereq = "False"
+	//Check if the user has requested for the new connection to be made the default
+	$("#defaultCheck").click(function() {
+            if($('#defaultCheck').is(':checked')) { 
+				ConnDefault = "True"
+            } else {
+                ConnDefault = "False"
+            }
+	});
+
+	//Check if port forward required
+	$("#portForwardCheck").click(function() 
+	{
+		if($('#portForwardCheck').is(':checked')) { 
+			reqPortFoward = "True"
+			$('#keypath').prop('required', true);
+			$('#keyUser').prop('required', true);
+		
+
+		} else {
+			reqPortFoward = "False"
+			$('#keypath').prop('required', false);
+			$('#keyUser').prop('required', false);
+
+		}
+	});
+	
+	$("#keypassCheck").click(function() 
+	{
+		if($('#keypassCheck').is(':checked')) { 
+			isPassphrasereq = "True"
+			$('#keyPassphrase').prop('required', true);
+			
+			
+		} else {
+			isPassphrasereq = "False"
+			$('#keyPassphrase').prop('required', false);
+		}
+    });
+
+	// $('#portForwardCheck').change(function () {
+	// 	if($(this).is(':checked') {
+	// 		$('#keypath').attr('required');
+	// 		$('#keyUser').attr('required');		
+	// 	} else {
+	// 		$('#keypath').removeAttr('required');
+	// 		$('#keyUser').removeAttr('required');
+	// 	}
+	// });
+
+	// * * * * * Key for the manage form
+	// updateConnection
+	$('#settingsForm').submit(function(e){
+		e.preventDefault();
+		$.ajax({url:"/plugin/gvmscan/settings/", type:"POST", data:JSON.stringify({ action: "newConnection",setDefault : ConnDefault, reqPortFoward: reqPortFoward, isPassphrasereq: isPassphrasereq ,configName: $('#configName').val(), gvmUser: $('#gvmUser').val(), gvmPass: $('#gvmPass').val(),hostname: $('#hostname').val(),apiPort: $('#apiPort').val(), keypath: $('#keypath').val(), keyUser: $('#keyUser').val(), keyPassphrase: $('#keyPassphrase').val(), CSRF: CSRF }), contentType:"application/json", success: function ( result ) {
+
+				// var panel = $("#settingsForm");
+				// dropdownAlert(panel,"updated config","Settings Message",1000);
+				$("#error_message").html("").hide();
+				$('#success_message').fadeIn().html("Settings have been updated");
+				setTimeout(function() {
+					$('#success_message').fadeOut("slow");
+				}, 2000 );
+
+			},
+			error: function ( result ) {
+				$("#success_message").html("").hide();
+				$('#error_message').fadeIn().html("Could not update settings");
+				setTimeout(function() {
+					$('#success_message').fadeOut("slow");
+				}, 2000 );
+			}
+		});
+	});
+</script>
+{% endblock %}

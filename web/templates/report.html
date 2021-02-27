@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+	<link rel="stylesheet" href="{{ url_for('gvmPages.static', filename='css/reportStyling.css') }}">
+{% endblock %}
+
+{% block content %}
+
+
+<div class="col-lg-12 mt-4 mb-4">
+	<div class="card">
+		<div class="card-body text-center">
+			
+			<h1 class="display-4 ">Report: {{ scanName }}</h1>
+			<p>Last Scan Date:  {{ lastScan }}</p>
+			<a href="/plugin/gvmscan/downloadreport/?reportName={{ scanName | urlencode }}"><button class="btn-circle">Download Report</button></a>
+
+		</div>
+	</div>	
+</div>
+
+<div class="row mb-4 align-items-stretch">
+	<div class="col-lg-6 mb-4">
+		<div class="card">
+			<h5 class="card-header text-center">Vulnerability Count<i class="fa  fa-exclamation-circle" aria-hidden="true"></i></h5>
+			<div class="card-body">
+				<canvas id="doughnut-chart" width="600" height="250"></canvas>
+			</div>
+		</div>	
+	</div>
+	<div class="col-md-6">
+		<!--  -->
+		<div class="row">
+			<!--  -->
+			<div class="col-md-12 mb-4">
+				<!-- CVEs -->
+				<div class="card">
+					<h5 class="card-header text-center">CVEs <i class="fa  fa-exclamation-circle" aria-hidden="true"></i></h5>
+					<div class="card-body">
+
+						<table id="cveTable" class="table table-sm" cellspacing="0" width="100%">
+							<thead>
+								<tr>
+									<th class="th-sm">CVE</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for result in cve%}
+								<tr>
+									<td>{{ result }}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="row">
+			<!--  -->
+			<div class="col-md-12 mb-4">				
+				<div class="card">
+					<h5 class="card-header text-center">Ports  <i class="fa fa-map-pin" aria-hidden="true"></i> </h5>
+					<div class="card-body">
+
+						<table id="portTable" class="table table-sm" cellspacing="0" width="100%">
+							<thead>
+								<tr>
+									<th class="th-sm">Port</th>
+									<th class="th-sm">Severity</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for dict_item in ports%}
+								<tr>
+									<td>{{ dict_item["port"] }}</td>
+									<td>{{ dict_item["severity"] }}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>						
+					</div> 
+				</div>
+			</div>
+		</div>
+
+	</div> <!-- End of smaller cards-->
+</div>	<!-- End of row -->
+
+<div class="row">  
+	<div class="col-md-12 mb-4">
+		<div class="card mb-3" >
+			<h5 class="card-header text-center">Vulnerabilities <i class="fa  fa fa-newspaper-o" aria-hidden="true"></i></h5>
+			<div class="card-body">
+				
+				<table id="vulnTable" class="table table-bordered table-sm" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th class="th-sm">Name</th>
+							<th class="th-sm">Summary</th>
+							<th class="th-sm">Affected</th>	
+							<th class="th-sm">Severity</th>		
+							<th class="th-sm">SolutionType</th>
+							<th class="th-sm">False Positive</th>						
+						</tr>
+						</tr>
+					</thead>
+					<tbody>
+						{% for value in vulnerabilities%}
+						<tr>
+							<td>{{ value["Name"] }}</td>
+							<td>{{ value["Summary"] }}</td>
+							<td>{{ value["Affected"] }}</td>	
+							<td>{{ value["Severity"] }}</td>											
+							<td>{{ value["SolutionType"] }}</td>
+							<td> Not implemented yet </td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+
+			</div>
+		</div>	<!-- End Card -->
+	</div> <!-- end col-->
+</div>  <!-- End Row -->
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+	
+	var scanName 	= "{{ scanName}} "
+	var vulnCount 	= {{ vulncount | tojson | safe }}
+
+	var Log  		= vulnCount["Log"]
+	var Low			= vulnCount["Low"]
+	var Medium		= vulnCount["Medium"]
+	var High		= vulnCount["High"]
+
+	//PieChart Data
+	var chartLabels       = ["High", "Medium", "Low","log"]
+    var pieChartData = [High,Medium,Low,Log]
+	var pieTitle     = "Vuln Count"
+	var ChartColours = ["rgba(255, 99, 132, 1)", "rgba(255, 166, 0, 1)","rgba(0, 128, 128, 1)","rgba(0, 128, 0, 1)"]    
+    	
+</script>
+<script>
+	//Table
+	
+	$(document).ready(function () {
+		$('#cveTable').DataTable({
+			"pageLength": 3,
+			"searching": false,
+			
+			"bLengthChange" : false,
+			fnDrawCallback: function() {
+				$("#cveTable thead").remove();
+			}
+		});
+
+		$('#portTable').DataTable({
+			"pageLength": 3,
+			"searching": false,
+			
+			"bLengthChange" : false,
+			fnDrawCallback: function() {
+				$("#portTable thead").remove();
+			}
+		});
+		
+		$('#vulnTable').DataTable();
+		$('.dataTables_length').addClass('bs-select');
+		});
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script src="{{ url_for('gvmPages.static', filename='js/pieChart.js') }}"></script>
+
+
+{% endblock %}

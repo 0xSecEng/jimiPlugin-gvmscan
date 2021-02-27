@@ -1,0 +1,44 @@
+<!DOCTYPE html> 
+
+<script src="{{ url_for('static', filename='includes/jquery/js/jquery-3.4.1.js') }}"></script>
+
+<script src="{{ url_for('static', filename='includes/jquery/js/jquery.datatables.min.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='includes/datatables/css/dataTables.bootstrap.css') }}">
+
+<script src="{{ url_for('static', filename='includes/datatables/js/dataTables.bootstrap.js') }}"></script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='includes/bootstrap-3.3.7/css/bootstrap.min.css') }}">
+
+<script src="{{ url_for('static', filename='includes/bootstrap-3.3.7/js/bootstrap.min.js') }}"></script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/datatable.css') }}">
+
+<script src="{{ url_for('static', filename='javascript/alert.js') }}"></script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='themes/default/default.css') }}">
+
+<!-- For UI Icons  -->
+<!-- https://fontawesome.com/icons/exclamation?style=solid -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+
+
+{% block stylesheet %}
+
+{% endblock %}
+<html>
+    <head>
+        
+    </head>
+    <body class="theme-panelContainer">
+
+            {% block content %}
+
+            {% endblock %}
+
+
+            {% block scripts %}
+
+            {% endblock %}
+    </body>
+</html>
+

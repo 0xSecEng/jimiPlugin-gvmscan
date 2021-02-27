@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+
+{% block stylesheet %}
+<style>
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+<script>
+    var CSRF = "{{CSRF}}"
+</script>
+
+
+<div>
+  <h1>
+    Manage GVM Ports
+  </h1>
+  <h5>
+    Allows you to add / remove specified port ranges
+  </h5>
+  <br>
+</div>
+
+<div>
+  <form id="manageports">
+      <div class="form-group">
+          <input id="groupname" type="text" class="form-control" placeholder="E.g SMB Port List" required="required" autofocus>
+      </div>
+      <div class="form-group">
+          <input id="tcpports" type="text" class="form-control" placeholder="E.g  T:80,T:443,T:21-22,U:69,U:200-4000" required="required" autofocus>
+      </div>
+      <div class="submithelp">
+        <div class="form-group">
+            <button id="submit" class="btn btn-primary">Submit</button></br>
+        </div>
+
+        <button class="btn btn-warning" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          Help
+        </button>
+        <div class="collapse" id="collapseExample">
+          <div class="card card-body">
+            <h3>Guide</h3>
+            <p>To submit a new port range, prepend T: for TCP ports or U: for UDP (self explanatory). You're able able to submit several ports in a single request</p>
+            <p>Simply add a comma after each entry e.g. T:80,:T:443,U:69 OR if you wish to select a broader range set your range using a hyphen e.g. T:80-443 will</p>
+            <p>scan every single port between 80 & 443 </p>
+          </div>
+        </div>
+    
+      </div> <!-- End Row-->
+  </form>
+</div>
+
+
+<!-- https://getbootstrap.com/docs/4.0/components/buttons/ -->
+<table id="orderTable" class="table table-sm table-bordered" cellspacing="0" width="100%">
+    <thead class="theme-tableHeader">
+        <tr>
+            <th class="th-sm">Port List Name</th>
+            <!-- <th class="th-sm">ID </th> -->
+            <th class="th-sm">Currently Used</th>
+            <th class="th-sm">Targets (if in Use)</th>
+            <th class="th-sm">Edit Port Group</th>
+            <th class="th-sm">Port Config</th>
+
+        </tr>
+    </thead>
+    <tbody class="theme-tableBody">
+        {% for value in portInfo %}
+        <tr>
+            <td>{{ value["PortListName"] }}</td>
+            <!-- <td>{{ value["portID"] }}</td> -->
+            <td>{{ value["inUse"] }}</td>
+            <td>{{ value["targets"] }}</td>
+            <td>  <button id="{{ value["portID"] }}" class="btn btn-danger port_id">Delete</button></br> </td>
+            <td>{{ value["configuredPorts"] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+<!-- <form>
+    <div class="form-group">
+      <label for="exampleInputEmail1">Email address</label>
+      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+      <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+    </div>
+    <div class="form-group">
+      <label for="exampleInputPassword1">Password</label>
+      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+    </div>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="exampleCheck1">
+      <label class="form-check-label" for="exampleCheck1">Check me out</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+ -->
+
+
+
+
+<!-- postDataForm -->
+<script>
+    console.log("Hello world!");
+  
+  //   function getReturn() {
+	// 	return window.location.href.match("return=(\/.*)")[1];
+	// };
+
+  $('.port_id').on('click', function(){
+    var port_id = $(this).attr('id');
+    console.log(port_id);
+  });
+    $("#submit").click(function () {
+    $('#output').text("Running...")
+    $.ajax({url: "/plugin/gvmscan/portstoapi/", type:"POST", data:JSON.stringify({ ports: $('#tcpports').val(),groupname: $('#groupname').val(), CSRF: CSRF }), contentType:"application/json", success: function(result) {
+        windows.localtion.reload();
+
+      }
+    });
+  });
+    
+
+
+
+
+
+
+</script>
+
+{% endblock %}

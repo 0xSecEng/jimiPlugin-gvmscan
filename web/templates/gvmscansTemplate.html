@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{ url_for('gvmPages.static', filename='css/reportStyling.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="row">  
+    <div class="col-md-12 mt-4 mb-4">	
+        <div class="card">
+            <div class="card-body">
+                
+                <div class="row">
+                    <!--  -->
+                    <div class="col-md-12 mt-4 mb-4">				
+                        <div class="card-body">
+                            <h1 class="text-center">GVM Reports</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <table id="dtBasicExample" class="table table-bordered table-sm" cellspacing="0" width="100%">
+                    <thead class="theme-tableHeader">
+                        <tr>
+                            <th class="th-sm text-center">Task Name</th>
+                            <th class="th-sm text-center">Last Scan</th>
+                            <th class="th-sm text-center">Report Summary</th>
+                            <th class="th-sm text-center">HTML Report</th>
+                            <th class="th-sm text-center">Manage </th>
+                        </tr>
+                    </thead>
+                    <tbody class="theme-tableBody">
+                        {% for value in gvmscans %}
+                        <tr>
+                            <td class="text-center">{{ value["Target"] }}</td>
+                            <td class="text-center">{{ value["LastScan"] }}</td>
+                            <td class="text-center">High: {{ value["High"] }}, Medium: {{ value["Medium"] }}, Low: {{ value["Low"] }}, Log: {{ value["Log"] }}</td>
+                            <td class="text-center"><a href="/plugin/gvmscan/report/?reportName={{ value['Target'] | urlencode }}"><button class="btn-primary">View Report</button></a></td>
+                            <td class="text-center"><button id="removeScan"  class="btn-danger" value="{{ value['Target'] | urlencode }}">Delete Scan</button></td>
+                            <!-- onclick="confirmation( '{{ value['Target'] | urlencode }}' )" -->
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>  <!-- end card-->
+    </div> <!-- end coloum-->
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    var CSRF = "{{CSRF}}"
+    
+    $('#removeScan').click(function (event) {
+        
+        var scanName = $(this).attr("value");
+        if (confirm('Are you sure you want to delete this?')) {
+            $.ajax({
+                url: "/plugin/gvmscan/deletescan/",
+                type: "POST",
+                data: JSON.stringify({scanName: scanName, CSRF: CSRF }),
+                contentType:"application/json",
+                success: function () {
+                    alert("Successfully deleted scan")
+                }, error: function ( result ) {
+                    // 
+                    alert("Unable to remove")
+                }
+            });
+        }
+    });
+</script>
+<script>
+	//Table
+	$(document).ready(function () {
+		$('#dtBasicExample').DataTable();
+		$('.dataTables_length').addClass('bs-select');
+		});
+</script>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+
+<link rel="stylesheet" href="{{ url_for('gvmPages.static', filename='css/reportStyling.css') }}">
+
+{% endblock %}
+
+<!-- Content -->
+{% block content %}
+
+<div class="row">  
+
+	<div class="col-lg-12 mt-4">
+		<div class="card">
+			<div class="card-body">
+
+                <div class="row">
+                    <!--  -->
+                    <div class="col-md-12 mt-4 mb-4">				
+                        <div class="card-body">
+                            <h1 class="text-center">Summary of {{ vulnSeverity }} Vulnerabilities</h1>
+                        </div>
+                    </div>
+				</div>
+				
+				<table id="aggregateTable" class="table table-bordered table-sm" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th class="th-sm">Scan Name</th>
+							<th class="th-sm">Name</th>
+							<th class="th-sm">Summary</th>
+							<th class="th-sm">Impact</th>	
+							<th class="th-sm">Affected</th>	
+							<th class="th-sm">Severity</th>		
+							<th class="th-sm">SolutionType</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for value in vulnerabilities%}
+						<tr>
+							
+							<td>{{ value["scanName"] }}</td>
+							<td>{{ value["Name"] }}</td>
+							<td>{{ value["Summary"] }}</td>
+							<td>{{ value["Impact"] }}</td>
+							<td>{{ value["Affected"] }}</td>	
+							<td>{{ value["Severity"] }}</td>											
+							<td>{{ value["SolutionType"] }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+
+			</div>
+		</div>	
+	</div>
+
+
+</div>  <!-- End Row -->
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+	//Table
+	$(document).ready(function () {
+		$('#aggregateTable').DataTable();
+		$('.dataTables_length').addClass('bs-select');
+		});
+</script>
+{% endblock %}

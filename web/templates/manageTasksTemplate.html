@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<table id="orderTable" class="table table-sm theme-table" cellspacing="0" width="100%">
+    <thead class="theme-tableHeader">
+        <tr>
+            <th class="th-sm">Task Name</th>
+            <!-- <th class="th-sm">Task Comment</th> -->
+            <th class="th-sm">Task Status</th>
+            <th class="th-sm">Task Scan Profile</th>
+            <th class="th-sm">Task Progress</th>=
+        </tr>
+    </thead>
+    <!-- {"taskID": id, "taskName": name, "taskComment": comment, "taskStatus": status, "taskSConfig": config, "taskProgress": progress, "targetID": targetID -->
+    <tbody class="theme-tableBody">
+        {% for value in taskInfo %}
+        <tr> </tr><!-- <tr id='{{ value["taskID"] }}'> -->
+            <td>{{ value["taskName"] }}</td>
+            <!-- <td>{{ value["taskComment"] }}</td> -->
+            <td>{{ value["taskStatus"] }}</td>
+            <td>{{ value["taskSConfig"] }}</td>
+            <!-- <td>{{ value["taskProgress"] }}%</td> -->
+            <td>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: {{ value['taskProgress'] }}%" aria-valuenow="{{ value['taskProgress'] }}" aria-valuemax="100" aria-valuemin="0">{{ value["taskProgress"] }}%</div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block scripts %}
+
+
+{% endblock %}

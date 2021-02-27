@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+
+<link rel="stylesheet" href="{{ url_for('gvmPages.static', filename='css/menuBar.css') }}">
+
+<!-- Home Page Top Icons -->
+<link rel="stylesheet" href="{{ url_for('gvmPages.static', filename='css/homePageIcons.css') }}">
+
+<!-- Additional Styling on Chart -->
+<link rel="stylesheet" href="{{ url_for('gvmPages.static', filename='css/reportStyling.css') }}">
+
+
+{% endblock %}
+
+{% block content %}  
+<div class="row">
+    <!-- Scans In Progress -->
+    <div class="col-md-3 mt-4" onclick="location.href='/plugin/gvmscan/livescandata/'">
+        <!-- primary -->
+        <div class="card-counter inprogress">  
+        <i class="fa fa-tachometer"></i>
+        <span class="count-numbers">{{ scansInProgress }}</span>
+        <span class="count-name">Scans In Progress</span>
+        </div>
+    </div>
+
+    
+    {% for data in cardData %}
+        <!-- High Vulnerabilities -->
+        <div class="col-md-3 mt-4" onclick="location.href='/plugin/aggregatecarddata/?severity=High'">
+            <div class="card-counter danger">
+            <i class="fa fa-exclamation-triangle"></i>
+            <span class="count-numbers">{{ data["VulnSummary"]["high"] }}</span>
+            <span class="count-name">High Vulnerabilities</span>
+            </div>
+        </div>
+
+        <!-- Medium Vulnerabilities -->
+        <div class="col-md-3 mt-4" onclick="location.href='/plugin/aggregatecarddata/?severity=Medium'">
+            <div class="card-counter warn">
+            <i class="fa fa-exclamation"></i>
+            <span class="count-numbers">{{ data["VulnSummary"]["medium"] }}</span>
+            <span class="count-name">Medium Vulnerabilities</span>
+            </div>
+        </div>
+        <!-- Low vulns -->
+        <div class="col-md-3 mt-4" onclick="location.href='/plugin/aggregatecarddata/?severity=LowLog'">
+            <div class="card-counter info">
+            <i class="fa fa-info"></i>
+            <span class="count-numbers">{{ data["VulnSummary"]["low_log"] }}</span>
+            <span class="count-name">Low / Log Vulnerabilities</span>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<!-- End Top Banner  -->
+
+<!-- <div class="col-sm mt-4 mb-5 "> -->
+<div class="row">  
+
+    <!-- Bar Chart  Top 5 Vulns -->
+    <div class="col-lg-6 mt-2 mb-2 ">
+		<div class="card">
+			<h5 class="card-header">Top 5 Vulnerable Hosts (Medium / High) <i class="fa  fa-exclamation-circle" aria-hidden="true"></i></h5>
+			<div class="card-body">
+				<canvas id="bar-chart" width="700" height="300"></canvas>
+			</div>
+		</div>
+	</div>
+    
+    <!-- Radar Chart -->
+    <div class="col-lg-6 mt-2 mb-2 ">
+		<div class="card">
+			<h5 class="card-header">Distrubution of Vulnerabilities by port (High / Medium) <i class="fa  fa-exclamation-circle" aria-hidden="true"></i></h5>
+			<div class="card-body">
+				<canvas id="test-chart" width="600" height="250"></canvas>
+			</div>
+		</div>
+	</div>
+
+
+</div> 
+<!-- End future charts Row-->
+
+<div class="row menu-center">
+        <div class="col-sm-3 mt-4" onclick="location.href='/plugin/gvmscan/manageports/'">
+            <div class="card-counter menucolour">  
+                <i class="fa  fa-newspaper-o"></i>
+                <span class="custom-title">Manage ports</span>
+                <span class="count-name">Create / manage port mappings</span>
+            </div>
+        </div>
+
+        <div class="col-sm-3 mt-4" onclick="location.href='/plugin/gvmscan/manage/'">
+            <div class="card-counter menucolour">  
+                <i class="fa  fa-newspaper-o"></i>
+                <span class="custom-title">Configured Scans</span>
+                <span class="count-name">View HTML reports</span>
+            </div>
+        </div>
+
+        <div class="col-sm-3 mt-4" onclick="location.href='/plugin/gvmscan/settings/'">
+            <div class="card-counter menucolour">  
+                <i class="fa  fa-cog"></i>
+                <span class="custom-title">Settings</span>
+                <span class="count-name">Manage connections</span>
+            </div>
+        </div>
+</div>
+<!-- End *NEW* menu  Row-->
+
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    //Data Passed to Charts
+    //BarChart - Top 5 Vulnerable Hosts
+    var barChartData        = {{barChartData | tojson | safe}};
+    var chartTitle          = "Top 5 Vulnerable hosts (Medium/High)"
+    var barChartHorizontal  =  'horizontalBar'
+    var topfiveHostLabel    = Object.keys(barChartData)
+    var hostresult          = Object.keys(barChartData).map(function (key) { return barChartData[key]; })
+
+    //Radar Chart
+    var radarHigh           = {{radarHigh | tojson | safe}};
+    var radarMedium         = {{radarMedium | tojson | safe}};
+    var mediumVals         = Object.values(radarMedium);
+    var highVals           = Object.values(radarHigh);
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script src="{{ url_for('gvmPages.static', filename='js/barchart_top5Hosts.js') }}"></script>
+<script src="{{ url_for('gvmPages.static', filename='js/radarChart.js') }}"></script>
+
+{% endblock %}

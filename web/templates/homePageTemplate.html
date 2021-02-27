@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+
+<link rel="stylesheet" href="https://cdn.metroui.org.ua/v4/css/metro.min.css">
+<link rel="stylesheet" href="https://cdn.metroui.org.ua/v4/css/metro-colors.min.css">
+<link rel="stylesheet" href="https://cdn.metroui.org.ua/v4/css/metro-rtl.min.css">
+<link rel="stylesheet" href="https://cdn.metroui.org.ua/v4/css/metro-icons.min.css">
+
+
+
+<script src="{{ url_for('static', filename='includes/jquery/js/jquery-3.4.1.js') }}"></script>
+<script src="{{ url_for('static', filename='includes/jquery/js/jquery.datatables.min.js') }}"></script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='includes/datatables/css/dataTables.bootstrap.css') }}">
+<script src="{{ url_for('static', filename='includes/datatables/js/dataTables.bootstrap.js') }}"></script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='includes/bootstrap-3.3.7/css/bootstrap.min.css') }}">
+<script src="{{ url_for('static', filename='includes/bootstrap-3.3.7/js/bootstrap.min.js') }}"></script>
+
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/datatable.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='themes/default/default.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('gvmPages.static', filename='css/menuBar.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('gvmPages.static', filename='css/sb-admin-2.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('gvmPages.static', filename='css/all.min.css') }}">
+
+
+
+{% endblock %}
+
+
+
+{% block content %}
+
+<div class="row" >
+    <div class="col-lg-6 mb-4 ">
+        <div class="card shadow mb-4 bg-gray-900">
+            <div class="card-header py-3 bg-gray-900">
+            <h2 class="m-0 font-weight-bold text-primary">Vuln trend?</h2>
+            </div>
+            <div class="card-body">
+            <div class="chart-area">
+                <canvas id="myAreaChart"></canvas>
+            </div>
+            <hr>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Icons -->
+<!-- https://metroui.org.ua/v2/icons.html -->
+
+    <div class="tiles-grid"> 
+
+        <div data-role="tile" class="bg-green" data-size="medium">
+            <span class="badge-top">?</span>
+            <span class="mif-search icon"></span>
+            <span class="branding-bar">Delete</span>
+        </div>
+
+        <div data-role="tile" data-size="wide">
+            <span class="badge-top">>?</span>
+            <span class="mif-layers icon"></span>
+            <span class="branding-bar">Manage Ports</span>
+        </div>
+
+        <!-- <a href="/plugin/gvmscan/manageports">  -->
+            <div data-role="tile" data-size="medium" >            
+                <span class="badge-bottom">?</span>
+                <span class="mif-cog icon"></span>
+                <span class="branding-bar">Manage Configured Scans</span>
+            </div>
+        <!-- </a> -->
+        
+        <div data-role="tile" class="bg-red" data-size="large">
+            <span class="badge-top">badge</span>
+            <span class="mif-stats-up icon"></span>
+            <span class="branding-bar">System Settings/ Feeds</span>
+        </div>
+
+        <div data-role="tile" data-size="medium">
+            <span class="mif-stats icon"></span>
+            <span class="branding-bar">Change Me</span>
+        </div>
+
+    </div> <!-- End Grid-->
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<!-- Chart-->
+<script src="{{ url_for('gvmPages.static', filename='js/chart.js/Chart.min.js') }}"></script>
+<script src="{{ url_for('gvmPages.static', filename='js/demo/chart-area-demo.js') }}"></script>
+
+<script src="https://cdn.metroui.org.ua/v4.3.2/js/metro.min.js"></script>
+
+{% endblock %}
